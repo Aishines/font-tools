@@ -11,8 +11,7 @@ function main() {
   // 获取解析后的font属性
   const font = loadSync(fontPath, { lowMemory: true })
   const GSUBTable = getGSUBTable(font)
-  
-  fs.writeFileSync(__dirname + '/map2.json', JSON.stringify(GSUBTable))
+  fs.writeFileSync(__dirname + '/../map.json', JSON.stringify(GSUBTable))
 }
 
 function getGSUBTable(font: Font) {
