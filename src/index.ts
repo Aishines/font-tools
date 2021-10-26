@@ -15,12 +15,11 @@ function main() {
 }
 
 function getGSUBTable(font: Font) {
-  // 1， 获取gsub 表
+  // 1， 获取gsub表
   const gsub = font.tables.gsub
-  const scripts = gsub.scripts as GSubScript[]
-  // 2, 找到阿拉伯字体
-  if (!(scripts instanceof Array) || scripts.length < 1) return
-  const arabScrit = scripts.filter((script) => script.tag === ArabicScript)[0].script
+
+  // 2, 是否支持阿拉伯字体
+  const arabScrit = findArabScript(gsub.scripts)
   if (!arabScrit) return
 
   const featureIndexes =
@@ -29,16 +28,19 @@ function getGSUBTable(font: Font) {
 
   // init medi fina isol
   const newFeatureList: Feature[] = getFeatureList(gsub.features, featureIndexes)
-  console.log('newFeatureList', newFeatureList)
-
-  const lookups: Lookup[] = gsub.lookups
 
   // ranges to substitute map 字符位置替换表
-  const substituteMap = getSubstituteMap(newFeatureList, lookups)
+  const substituteMap = getSubstituteMap(newFeatureList, gsub.lookups)
 
   // 处理成unicode的映射
   const index2UnicodeArrayMap: IndexToUnicodeMap = (font as any)._IndexToUnicodeMap
 
+  const result = proceedUnicodeSubstituteMap(substituteMap, index2UnicodeArrayMap)
+
+  return result
+}
+
+function proceedUnicodeSubstituteMap(substituteMap: {}, index2UnicodeArrayMap: IndexToUnicodeMap) {
   const result = {}
   Reflect.ownKeys(substituteMap).forEach((key) => {
     const substitute = substituteMap[key]
@@ -55,10 +57,17 @@ function getGSUBTable(font: Font) {
       }
     })
   })
-
   return result
 }
 
+function findArabScript(scripts: GSubScript[]) {
+  if (!(scripts instanceof Array) || scripts.length < 1) return null
+  const arabScript = scripts.filter((script) => script.tag === ArabicScript)
+  if (arabScript?.length > 0) return arabScript[0].script
+  return null
+}
+
+// 获取字形替换表信息
 function getSubstituteMap(newFeatureList: Feature[], lookups: Lookup[]) {
   const substituteMap = {}
   newFeatureList.forEach((feature) => {
@@ -87,6 +96,7 @@ function getSubstituteMap(newFeatureList: Feature[], lookups: Lookup[]) {
   return substituteMap
 }
 
+// 获取arab字体中的「init」 「medi」「fina」「isol」featureList
 function getFeatureList(features: Feature[], featureIndexes: number[]) {
   const newFeatureList: Feature[] = []
 
