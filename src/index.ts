@@ -1,4 +1,5 @@
 import { loadSync, Font } from 'opentype.js'
+import * as fs from 'fs'
 
 import { GSubScript, Feature, Lookup, IndexToUnicodeMap } from './types'
 const fontPath = __dirname + '/assets/Arial.ttf'
@@ -10,6 +11,8 @@ function main() {
   // 获取解析后的font属性
   const font = loadSync(fontPath, { lowMemory: true })
   const GSUBTable = getGSUBTable(font)
+  
+  fs.writeFileSync(__dirname + '/map2.json', JSON.stringify(GSUBTable))
 }
 
 function getGSUBTable(font: Font) {
