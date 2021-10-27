@@ -2,7 +2,7 @@ import { loadSync, Font } from 'opentype.js'
 import * as fs from 'fs'
 
 import { GSubScript, Feature, Lookup, IndexToUnicodeMap } from './types'
-const fontPath = __dirname + '/assets/Arial.ttf'
+const fontPath = __dirname + '/assets/Times New Roman.ttf'
 
 const AribicCharPos = ['init', 'medi', 'fina', 'isol']
 const ArabicScript = 'arab'
