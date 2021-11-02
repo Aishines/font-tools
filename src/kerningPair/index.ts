@@ -8,6 +8,7 @@ export function getKerningPairs(font: Font) {
   // 处理成unicodeMap
   const index2UnicodeArrayMap: IndexToUnicodeMap = (font as any)._IndexToUnicodeMap
   const kerningUnicodePairs = {}
+  // const unitPerEm = font.unitsPerEm
   idxKeyPairArray.forEach((idxKeyPair: string) => {
     const twoKeys = idxKeyPair.split(',')
     const unicodes1 = index2UnicodeArrayMap[twoKeys[0]].unicodes
