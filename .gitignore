@@ -5,3 +5,4 @@ node_modules
 dist/
 vscode-chrome-debug-userdatadir/
 src/**/*.js
+output

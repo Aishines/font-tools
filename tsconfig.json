@@ -3,7 +3,6 @@
     "outDir": "./dist/",
     "module": "es6",
     "target": "es5",
-    "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node",
     "sourceMap": true
