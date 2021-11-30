@@ -1,5 +1,5 @@
 import { Font } from "opentype.js"
-import { Feature, GSubScript, IndexToUnicodeMap, Lookup } from "../types"
+import { Feature, GSubScript, IndexToUnicodeMap, Lookup } from "./types"
 
 
 const AribicCharPos = ['init', 'medi', 'fina', 'isol']

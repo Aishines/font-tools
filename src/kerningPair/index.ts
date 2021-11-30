@@ -1,5 +1,5 @@
 import { Font } from 'opentype.js'
-import { IndexToUnicodeMap } from '../types'
+import { IndexToUnicodeMap } from '../subTables/types'
 
 export function getKerningPairs(font: Font) {
   const kerningUnicodePairs = {}

@@ -1,4 +1,4 @@
-import { processArabChar } from '.'
+import { processArabChar } from '../../src/ArabicStr'
 
 const charCodeArr = [1588, 1588, 1588, 1588]
 const charCodeArr2 = [1588, 1588, 1588, 1588, 1604, 1575, 1604, 1575]
