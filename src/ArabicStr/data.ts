@@ -854,16 +854,16 @@ export const GlobalSubstituteMap: ISubstutite = {
   ],
 }
 
-export const ArabicFontRange = [
+export const ArabicCodeRange = [
   [1536, 1791],
   [1872, 1919],
   [64336, 65023],
   [65136, 65279],
 ]
 
-export function isArabicFont(charCode: number) {
-  for (var t = 0, n = ArabicFontRange.length; t < n; ++t) {
-    var i = ArabicFontRange[t]
+export function isArabicCode(charCode: number) {
+  for (var t = 0, n = ArabicCodeRange.length; t < n; ++t) {
+    var i = ArabicCodeRange[t]
     if (charCode >= i[0] && charCode <= i[1]) return !0
   }
   return !1
@@ -926,6 +926,6 @@ const cache = {
 }
 
 // 不需要处理的字符替换的阿拉伯文字
-export function noNeedSubstituteChar(charCode: number) {
+export function noNeedReplaceChar(charCode: number) {
   return cache[charCode]
 }

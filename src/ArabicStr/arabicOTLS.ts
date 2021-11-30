@@ -1,4 +1,4 @@
-import { GlobalSubstituteMap, isArabicFont, noNeedSubstituteChar } from './data'
+import { GlobalSubstituteMap, isArabicCode, noNeedReplaceChar } from './data'
 import { IArabicObj, ISubstutite } from './types'
 
 function findCharSubstituteObj(substituteArr: ISubstutite[], charCode: number): ISubstutite {
@@ -30,7 +30,7 @@ function canBeStartOrMiddleNode(
   let iter = GlobalSubstituteMap
   let r = iter
   for (var s = srcPos; iter.childs; ) {
-    if (noNeedSubstituteChar(charCode)) {
+    if (noNeedReplaceChar(charCode)) {
       if (++s < len) {
         charCode = srcBuff[s]
         continue
@@ -51,15 +51,15 @@ function canBeStartOrMiddleNode(
   return r != GlobalSubstituteMap && !!(r.middle || r.end)
 }
 
-export function handlerArabicStr(arabObj: IArabicObj) {
-  let { srcPos, desPos } = arabObj
+function handlerArabicStr(arabObj: IArabicObj) {
+  let { srcPos } = arabObj
   const strLen = srcPos + arabObj.len
   const { srcBuff, desBuff } = arabObj
 
   let curIterLevel = -1
   let srcPos2 = srcPos // 记录处理到的位置
   let isStart = true
-  let srcIdx = srcPos
+
   let bIsArabic = false
   let canBeStartOrMid = true
 
@@ -67,19 +67,20 @@ export function handlerArabicStr(arabObj: IArabicObj) {
   const startOrMiddleNode = arabObj.startOrMiddleNode
 
   let indexI = 0
-  while (srcIdx < srcPos) {
-    let curSrcCharCode = srcBuff[srcIdx] // 当前处理的字符
-    const isArab = isArabicFont(curSrcCharCode)
-    srcIdx === srcPos && (isStart = false)
 
+  let srcIdx = srcPos
+  while (srcIdx < strLen) {
+    let curSrcCharCode = srcBuff[srcIdx] // 当前处理的字符
+    const isArab = isArabicCode(curSrcCharCode)
     let iter = GlobalSubstituteMap // 记录当前「有效」迭代层级
     let iter2 = iter
+
+    srcIdx === srcPos && (isStart = false)
     // 递归到没有chilc层级
     while (iter2.childs) {
-      if (noNeedSubstituteChar(curSrcCharCode)) {
-        // TODO 不需要处理字符替换的阿拉伯字符
+      if (noNeedReplaceChar(curSrcCharCode)) {
+        // 不需要处理字符替换的阿拉伯字符
         if (iter !== GlobalSubstituteMap) break
-
         desBuff[arabObj.desPos++] = curSrcCharCode
         indexI++
         arabObj.len--
@@ -115,7 +116,7 @@ export function handlerArabicStr(arabObj: IArabicObj) {
     bIsArabic = isArab
 
     if (iter === GlobalSubstituteMap) {
-      desBuff[desPos] = curSrcCharCode // 当前字符不需要替换，直接填入desBuff
+      desBuff[arabObj.desPos] = curSrcCharCode // 当前字符不需要替换，直接填入desBuff
       srcPos2++
       isStart = false
     } else {
@@ -124,7 +125,7 @@ export function handlerArabicStr(arabObj: IArabicObj) {
       }
 
       canBeStartOrMid = srcPos2 < strLen && canBeStartOrMiddleNode(srcBuff, srcPos2, strLen, iter)
-      let substitu: ISubstutite = iter.isolate || iter.end || iter.start || iter.middle || iter
+      const substitu: ISubstutite = iter.isolate || iter.end || iter.start || iter.middle || iter
 
       if (isStart && canBeStartOrMid) {
         // 存在start 当前字符被替换为middle或者end
@@ -135,7 +136,7 @@ export function handlerArabicStr(arabObj: IArabicObj) {
           subchar = iter.end || substitu
         }
 
-        desBuff[arabObj.desPos] = substitu.ch
+        desBuff[arabObj.desPos] = subchar.ch
         isStart = subchar === substitu.middle || subchar === substitu.start
       } else if (isStart && !canBeStartOrMid) {
         isStart = false
@@ -169,4 +170,25 @@ export function handlerArabicStr(arabObj: IArabicObj) {
   }
 
   return indexI
+}
+
+export function processArabChar(araStr: string | Array<number>) {
+  const charCodeArr =
+    typeof araStr === 'string' ? Array.from(araStr).map((a) => a.charCodeAt(0)) : araStr
+
+  const inputArabObj = {
+    srcBuff: charCodeArr,
+    srcPos: 0,
+    desBuff: new Array(charCodeArr.length),
+    desPos: 0,
+    len: charCodeArr.length,
+    startOrMiddleNode: {},
+  }
+
+  do {
+    for (handlerArabicStr(inputArabObj); inputArabObj.desPos < inputArabObj.srcPos; )
+      inputArabObj.desPos++
+  } while (inputArabObj.len > 0)
+
+  return inputArabObj.desBuff
 }
