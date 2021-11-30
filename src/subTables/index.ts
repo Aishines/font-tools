@@ -41,7 +41,7 @@ export function getGSUBTable(font: Font) {
           const unicodes = index2UnicodeArrayMap[idx].unicodes
           unicodes.forEach((unicode) => {
             if (index2UnicodeArrayMap[substitute[idx]]?.unicodes) {
-              const valUnicode = index2UnicodeArrayMap[substitute[idx]].unicodes[0]
+              const valUnicode = index2UnicodeArrayMap[substitute[idx]].unicodes[index2UnicodeArrayMap[substitute[idx]].unicodes.length - 1]
               valUnicode && (result[key][unicode] = valUnicode)
             }
           })

@@ -7,11 +7,13 @@ import { getKerningPairs } from './kerningPair'
 const fontFilePath = `${__dirname}/assets/fonts`
 
 function main() {
-  const fontList = fs
-    .readdirSync(`${fontFilePath}`)
-    .filter((f) => f.includes('.ttf') || f.includes('.woff'))
-  console.log(fontList)
-  fontList.forEach((name) => readFont(name))
+  // const fontList = fs
+  //   .readdirSync(`${fontFilePath}`)
+  //   .filter((f) => f.includes('.ttf') || f.includes('.woff'))
+  // console.log(fontList)
+  // fontList.forEach((name) => readFont(name))
+
+  
 }
 
 // 主函数
@@ -25,6 +27,6 @@ function readFont(fontName: string) {
   const outputPath = __dirname + `/../output/${fontName}_kerningPairs.json`
   fs.writeFileSync(outputPath, JSON.stringify(KerningUnicodePairs))
 
-  // const GSUBTable = getGSUBTable(font)
-  // fs.writeFileSync(__dirname + `/../output/${fontName}_subTables.json`, JSON.stringify(GSUBTable))
+  const GSUBTable = getGSUBTable(font)
+  fs.writeFileSync(__dirname + `/../output/${fontName}_subTables.json`, JSON.stringify(GSUBTable))
 }
