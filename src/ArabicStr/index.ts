@@ -1,10 +1,5 @@
-import {
-  IArabicObj,
-  isArabicFont,
-  ISubstutite,
-  noNeedSubstituteChar,
-  GlobalSubstituteMap,
-} from './data'
+import { isArabicFont, noNeedSubstituteChar, GlobalSubstituteMap } from './data'
+import { IArabicObj, ISubstutite } from './types'
 
 function findCharSubstituteObj(substituteArr: ISubstutite[], charCode: number): ISubstutite {
   let n = 0

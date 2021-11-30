@@ -1,21 +1,4 @@
-export interface ISubstutite {
-  level?: number
-  childs?: ISubstutite[]
-  ch?: number
-  start?: { ch: number }
-  middle?: { ch: number }
-  end?: { ch: number }
-  isolate?: { ch: number }
-}
-
-export interface IArabicObj {
-  srcBuff: number[]
-  desBuff: number[]
-  srcPos: number
-  desPos: number
-  len: number
-  startOrMiddleNode: {} 
-}
+import { ISubstutite } from './types'
 
 export const GlobalSubstituteMap: ISubstutite = {
   level: 0,
@@ -878,10 +861,10 @@ export const ArabicFontRange = [
   [65136, 65279],
 ]
 
-export function isArabicFont(e) {
+export function isArabicFont(charCode: number) {
   for (var t = 0, n = ArabicFontRange.length; t < n; ++t) {
     var i = ArabicFontRange[t]
-    if (e >= i[0] && e <= i[1]) return !0
+    if (charCode >= i[0] && charCode <= i[1]) return !0
   }
   return !1
 }
